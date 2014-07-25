@@ -305,7 +305,7 @@ class PercutaneousPathDesignerWidget:
     # Check box for displaying each path
     #
     self.pathCandidateCheckBox = ctk.ctkCheckBox()
-    self.pathCandidateCheckBox.text = "Path Candidates (Red)"
+    self.pathCandidateCheckBox.text = "Path Candidate (Red)"
     self.pathCandidateCheckBox.enabled = False 
     self.pathCandidateCheckBox.checked = False    
     outcomesFormLayout.addRow(self.pathCandidateCheckBox)
@@ -314,7 +314,7 @@ class PercutaneousPathDesignerWidget:
     self.pathSlider = ctk.ctkSliderWidget()
     self.pathSlider.decimals = 0
     self.pathSlider.enabled = False
-    outcomesFormLayout.addRow("      Path Candidates (No.):", self.pathSlider)
+    outcomesFormLayout.addRow("      Path Candidate (No.):", self.pathSlider)
 
     # Point slider
     self.pointSlider = ctk.ctkSliderWidget()
