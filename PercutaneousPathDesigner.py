@@ -416,18 +416,11 @@ class PercutaneousPathDesignerWidget:
     self.OFF = 0
     self.VISIBLE = 1
     self.INVISIBLE = 0
-    #self.pushApplyButton = 0
 
-    # scene and model variables
-    self.sceneReceived = slicer.mrmlScene
+    # model variables
     self.modelReceived = slicer.vtkMRMLModelNode()
-
-    self.singlePathScene = slicer.mrmlScene
     self.singlePathModel = slicer.vtkMRMLModelNode()
-
-    self.virtualPathScene = slicer.mrmlScene
     self.virtualPathModel = slicer.vtkMRMLModelNode()   
-
     self.selectedPathTipModel = slicer.vtkMRMLModelNode()
     self.extendedPathTipModel = slicer.vtkMRMLModelNode()
     self.longestPathTipModel = slicer.vtkMRMLModelNode()
@@ -503,12 +496,6 @@ class PercutaneousPathDesignerWidget:
       self.applyButton.enabled = True
       self.targetSwitch = 1
 
-  def ckeckFindSafePath(self):
-    pass
-
-  def checkFindTheLeastAnglePath(self):
-    pass
-
   def onCreatePointOnThePathButton(self):
     entryPointsNode = self.entryPointsSelector.currentNode()
 
@@ -576,7 +563,7 @@ class PercutaneousPathDesignerWidget:
     # make all paths candidates
     self.pathReceived, self.nPathReceived, self.apReceived, self.minimumPoint, self.minimumDistance, self.maximumPoint, self.maximumDistance = logic.makePaths(targetPoint, targetModel, 0, obstacleModel, skinModel)
     # display all paths model
-    self.sceneReceived, self.modelReceived, pReceived, self.allPaths = NeedlePathModel().make(self.pathReceived, self.nPathReceived, self.VISIBLE, self.yellow, "candidatePaths", self.allLines)
+    self.modelReceived, pReceived, self.allPaths = NeedlePathModel().make(self.pathReceived, self.nPathReceived, self.VISIBLE, self.yellow, "candidatePaths", self.allLines)
 
     # display sphere model
     self.selectedPathTipModel, self.pointMarker, self.pointMarkerTransform = SphereModel().make(self.INVISIBLE, self.red, "selectedPathTip")
@@ -588,16 +575,15 @@ class PercutaneousPathDesignerWidget:
     self.onePath, self.onePathDistance = logic.makeSinglePath(self.apReceived, self.pathSliderValue)
 
     # display single path candidate model
-    self.singlePathScene, self.singlePathModel, self.singleP, self.singlePath = NeedlePathModel().make(self.onePath, 2, self.INVISIBLE, self.red, "selectedPath", self.singleLine)
-
+    self.singlePathModel, self.singleP, self.singlePath = NeedlePathModel().make(self.onePath, 2, self.INVISIBLE, self.red, "selectedPath", self.singleLine)
     self.virtualPath, self.virtualPathDistance = logic.makeVirtualPath(self.apReceived, self.pathSliderValue, self.virtualMarkerPosition)
-    self.virtualPathScene, self.virtualPathModel, self.virtualP, self.virtualPath2 = NeedlePathModel().make(self.virtualPath, 2, self.INVISIBLE, self.red, "extendedPath", self.extendedLine)
+    self.virtualPathModel, self.virtualP, self.virtualPath2 = NeedlePathModel().make(self.virtualPath, 2, self.INVISIBLE, self.red, "extendedPath", self.extendedLine)
     self.lengthOfPathSpinBox.value = self.virtualPathDistance
   
     # make the longest path
     self.theLongestPathTmp, self.distanceDummy = logic.makeSinglePath(self.apReceived, self.maximumPoint-1)
     # display the longest path
-    self.theLongestPathScene, self.theLongestPathModel, self.theLongestPathP, self.theLongestPath = NeedlePathModel().make(self.theLongestPathTmp, 2, self.INVISIBLE, self.green, "longestPath", self.longestLine)
+    self.theLongestPathModel, self.theLongestPathP, self.theLongestPath = NeedlePathModel().make(self.theLongestPathTmp, 2, self.INVISIBLE, self.green, "longestPath", self.longestLine)
     # make the point marker on the longest path 
     self.longestPathTipModel, self.theLongestPathPointMarker, self.theLongestPathPointMarkerTransform = SphereModel().make(self.INVISIBLE, self.green, "longestPathTip")
     self.theLongestPathPointMarkerPosition = SphereModel().move(self.apReceived, self.maximumPoint-1, 0, self.theLongestPathPointMarkerTransform)
@@ -605,7 +591,7 @@ class PercutaneousPathDesignerWidget:
     # make the shortest path
     self.theShortestPathTmp, self.distanceDummy = logic.makeSinglePath(self.apReceived, self.minimumPoint-1)
     # display the shortest path
-    self.theShortestPathScene, self.theShortestPathModel, self.theShortestPathP, self.theShortestPath = NeedlePathModel().make(self.theShortestPathTmp, 2, self.INVISIBLE, self.blue,"shortestPath", self.shortestLine)
+    self.theShortestPathModel, self.theShortestPathP, self.theShortestPath = NeedlePathModel().make(self.theShortestPathTmp, 2, self.INVISIBLE, self.blue,"shortestPath", self.shortestLine)
     # make the point marker on the shortest path 
     self.shortestPathTipModel, self.theShortestPathPointMarker, self.theShortestPathPointMarkerTransform = SphereModel().make(self.INVISIBLE, self.blue, "shortestPathTip")
     self.theShortestPathPointMarkerPosition = SphereModel().move(self.apReceived, self.minimumPoint-1, 0, self.theShortestPathPointMarkerTransform)
@@ -759,7 +745,6 @@ class PercutaneousPathDesignerLogic:
     qt.QTimer.singleShot(msec, self.info.close)
     self.info.exec_()
 
-  #def removeModel(self, scene, model):
   def removeModel(self, model):
     scene = slicer.mrmlScene
     scene.RemoveNode(model)    
@@ -794,9 +779,6 @@ class PercutaneousPathDesignerLogic:
 
     tipPoint[0] = targetP
     tipPoint[1] = skinP
-
-    print("targetP = ", targetP)
-    print("skinP = ", skinP)
 
     onePath = [targetP]
     onePath.append(skinP)
@@ -902,12 +884,6 @@ class PercutaneousPathDesignerLogic:
 
     return (self.path, approachablePoints, self.p, minimumPoint, minimumDistance, maximumPoint, maximumDistance)
 
-  def calculateLength(self, p2, p1, numberOfPath, lengthArray):
-    
-
-
-    return updatedLengthArray
-
 class SphereModel:
 
   def __init__(self):
@@ -1002,9 +978,6 @@ class NeedlePathModel:
   def __init__(self):
     pass
 
-  def recreatePathPolyData(self):
-    pass
-
   def modify(self, path, approachablePoints, visibilityParam, color, modelName, polyData):
     import numpy
 
@@ -1094,8 +1067,6 @@ class NeedlePathModel:
     model.SetName(scene.GenerateUniqueName(modelName))
     model.SetAndObservePolyData(polyData)
 
-    #polyData.Update()
-
     # Create display node
     modelDisplay = slicer.vtkMRMLModelDisplayNode()
     modelDisplay.SetColor(color[0], color[1], color[2])
@@ -1105,13 +1076,11 @@ class NeedlePathModel:
     scene.AddNode(modelDisplay)
     model.SetAndObserveDisplayNodeID(modelDisplay.GetID())
 
-    #print(modelDisplay)
-
     # Add to scene
     modelDisplay.SetInputPolyData(model.GetPolyData())
     scene.AddNode(model)
 
-    return (scene, model, p, modelDisplay)    
+    return (model, p, modelDisplay)    
 
 class PercutaneousPathDesignerTest(unittest.TestCase):
   """
