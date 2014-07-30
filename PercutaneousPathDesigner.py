@@ -371,12 +371,20 @@ class PercutaneousPathDesignerWidget:
     # Delete Models Button
     #
     self.deleteModelsButton = qt.QPushButton("Delete Paths")
-    self.deleteModelsButton.toolTip = "Delete Created Paths and Transforms"
+    self.deleteModelsButton.toolTip = "Delete Created Paths"
     self.deleteModelsButton.enabled = False    
-    #configurationFormLayout.addRow(self.deleteModelsButton)
     configurationFormLayout.addWidget(self.deleteModelsButton)
- 
+
+    #
+    # Delete Transforms Button
+    #
+    self.deleteTransformsButton = qt.QPushButton("Delete Transforms")
+    self.deleteTransformsButton.toolTip = "Delete Created Transforms"
+    self.deleteTransformsButton.enabled = False    
+    configurationFormLayout.addWidget(self.deleteTransformsButton)
+
     self.deleteModelsButton.connect('clicked()', self.onDeleteModelsButton)
+    self.deleteTransformsButton.connect('clicked()', self.onDeleteTransformsButton)
 
     # Add vertical spacer
     self.layout.addStretch(1)
@@ -537,7 +545,6 @@ class PercutaneousPathDesignerWidget:
       self.theShortestPathPointMarker.SetVisibility(self.OFF)    
 
   def onCheckPathCandidate(self):
-    #print(self.pointMarkerTransform)
     if self.pathCandidateCheckBox.checked == True:
       self.singlePath.SetVisibility(self.ON)
       self.pointMarker.SetVisibility(self.ON)
@@ -607,6 +614,7 @@ class PercutaneousPathDesignerWidget:
     self.outcomesList.collapsed = False
     self.allPathsOpacitySlider.enabled = True
     self.deleteModelsButton.enabled = True
+    self.deleteTransformsButton.enabled = True
 
     self.allPaths.SetOpacity(10.0/1000.0)
 
@@ -707,6 +715,16 @@ class PercutaneousPathDesignerWidget:
         logic.removeModel(self.longestPathTipModel)
         logic.removeModel(self.shortestPathTipModel)
 
+  def onDeleteTransformsButton(self):
+    if self.deleteTransformsButton.enabled == True:
+       self.deleteTransformsButton.enabled = False 
+       # delete all transforms
+       logic = PercutaneousPathDesignerLogic()
+       logic.removeTransform(self.pointMarkerTransform)
+       logic.removeTransform(self.virtualMarkerTransform)
+       logic.removeTransform(self.theLongestPathPointMarkerTransform)
+       logic.removeTransform(self.theShortestPathPointMarkerTransform)
+
 #
 # PercutaneousPathDesignerLogic
 #
@@ -750,6 +768,10 @@ class PercutaneousPathDesignerLogic:
   def removeModel(self, model):
     scene = slicer.mrmlScene
     scene.RemoveNode(model)    
+
+  def removeTransform(self, transform):
+    scene = slicer.mrmlScene
+    scene.RemoveNode(transform)    
 
   def makeSinglePath(self, p, pointNumber):  
     import numpy 
