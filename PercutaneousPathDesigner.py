@@ -92,7 +92,7 @@ class PercutaneousPathDesignerWidget:
     self.parametersList = parametersCollapsibleButton   
     self.layout.addWidget(parametersCollapsibleButton)
 
-    # Layout within the dummy collapsible button
+    # Layout within the collapsible button
     parametersFormLayout = qt.QFormLayout(parametersCollapsibleButton)
 
     #
