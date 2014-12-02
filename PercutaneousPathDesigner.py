@@ -646,8 +646,8 @@ class PercutaneousPathDesignerWidget:
     skinModel = self.skinModelSelector.currentNode()
 
     # clean up work space
-    #self.onDeleteModelsButton()
-    #self.onDeleteTransformsButton() 
+    self.onDeleteModelsButton()
+    self.onDeleteTransformsButton() 
 
     # make all paths
     self.pathReceived, self.nPathReceived, self.apReceived, self.minimumPoint, self.minimumDistance, self.maximumPoint, self.maximumDistance = logic.makePaths(targetPoint, targetModel, 0, obstacleModel, skinModel)
